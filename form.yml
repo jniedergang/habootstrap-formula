@@ -16,12 +16,12 @@ cluster:
   init:
     $name: First node
     $optional: false
-    $help: Node which creates the cluster
+    $help: Initial node which creates the cluster (get the correct from your Salt Minion with: 'salt-call --local grains.item host')
 
   unicast:
     $type: boolean
     $default: false
-    $help: Use UDP instead of multicast
+    $help: Cluster nodes communication type (corosync). Use UDP instead of Multicast
 
   interface:
     $type: text
@@ -44,16 +44,16 @@ cluster:
   admin_ip:
     $type: text
     $optional: true
-    $help: Configure a virtual IP resource in cluster
+    $help: Configure a virtual IP resource in the cluster.
 
   ntp:
     $type: text
     $placeholder: pool.ntp.org
     $optional: true
-    $help: ntp server address
+    $help: ntp server address. This is a critical resource for your nodes to be synched within the cluster.
 
   watchdog_checkbox:
-    $name: Configure watchdog
+    $name: Custom watchdog configuration. The default setting will use softdog which is installed and activated on each cluster node.
     $type: boolean
     $optional: true
     $default: false
@@ -74,7 +74,7 @@ cluster:
       $optional: true
   
   sbd_checkbox:
-    $name: Configure SBD device and SBD cluster resource
+    $name: Custom Stonith Block Device (SBD) device configuration and SBD cluster resource. This device is another communication path (using the storage infrastructure) for your nodes
     $type: boolean
     $optional: true
     $default: false
@@ -90,7 +90,7 @@ cluster:
       $optional: true
     device:
       $visibleIf: .diskless_checkbox == false
-      $name: SBD Device(s)
+      $name: SBD Device(s) - click the (+) button to add devices (Please prefer using /dev/disk/by-id/<your_storage_device> format)
       $optional: true
       $type: edit-group
       $itemName: ""
@@ -100,7 +100,7 @@ cluster:
         $optional: true
         $type: text
     configure_sbd_checkbox:
-      $name: Configure sbd cluster resource
+      $name: Custom sbd cluster resource confgiuration
       $type: boolean
       $default: false
       $help: This updates the resource stonith-sbd created if SBD is enabled. SBD configuration will be overwritten if the resource is defined in the configure template
@@ -211,7 +211,7 @@ cluster:
     $optional: true
     $type: group
     authorize_keys:
-      $name: Share SSH keys information
+      $name: Share SSH keys information - Mandatory for the automation to work
       $type: boolean
       $default: false
       $optional: true
@@ -239,12 +239,12 @@ cluster:
       $type: text
 
   corosync_checkbox:
-    $name: Configure corosync
+    $name: Custom corosync configuration
     $type: boolean
     $optional: true
     $default: false
   corosync:
-    $name: Corosync configuration
+    $name: Custom corosync configuration
     $visibleIf: .corosync_checkbox == true
     $type: edit-group
     $minItems: 0
@@ -386,7 +386,7 @@ cluster:
     $optional: true
     $default: false
   remove:
-    $name: Remove node(s) from cluster
+    $name: Clean node(s) removal from the cluster
     $visibleIf: .remove_checkbox == true
     $optional: true
     $type: edit-group
@@ -401,15 +401,15 @@ cluster:
     $name: Enable monitoring via ha_cluster_exporter
     $type: boolean
     $default: false
-    $help: Mark if you want to enable monitoring and have the exporter installed in all the nodes
+    $help: Mark if you want to enable monitoring and have the exporter installed in all the nodes (requires specific SLES for SAP repositories)
 
   change_hacluster_password:
-    $name: Update the cluster password
+    $name: Update the default user "hacluster" password
     $type: boolean
     $default: false
     $optional: true
   hacluster_password:
     $visibleIf: .change_hacluster_password == true
-    $name: New HA cluster password
+    $name: New hacluster user password
     $type: password
     $optional: true
